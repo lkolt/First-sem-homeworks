@@ -3,7 +3,7 @@
 
 int getByte(int x, int n)
 {
-    int res = (x >> (n + n + n + n)) & 15;
+    int res = ((x >> (n << 3)) & 255);
     return res;
 }
 
