@@ -3,7 +3,7 @@
 
 int isPower2(int x)
 {
-	int xmone = x + ~0;
+    int xmone = x + ~0;
     int _x = (x & xmone);      // 0 for 2^n
     return  (1 & !_x) & !(!x) & ~(x >> 31);
 }
