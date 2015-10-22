@@ -24,7 +24,9 @@ string s, s1;
 long long int get_hash(int l, int r) // return polinomial hash of S in [l..r]
 {
     if (l == 0)
+    {
         return hs[r];
+    }
     return ((hs[r] - hs[l - 1] * _pow[r - (l - 1)]) % MOD + MOD) % MOD;
 }
 
