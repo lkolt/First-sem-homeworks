@@ -1,0 +1,47 @@
+В этом файле собрана статистика использования hashmap на книге "Jane Eyre" by Charlotte Bronte для подсчета количества слов.
+Запускалась функция create(func, size). Где size - размер hashmap.
+
+func = hash_func_const, size = 10511. Вместо хешируещей функции возвращалась константа.
+Number of using cells: 1
+Number of elements: 188455
+Average length of chains: 1
+Minimal length of chains: 1
+Maximal length of chains: 1
+Maximal element: 188455
+0.062000
+
+func = hash_func_count, size = 10511. В качестве хеширующей функции использовалась сумма всех символов строки.
+Number of using cells: 1591
+Number of elements: 188455
+Average length of chains: 1
+Minimal length of chains: 1
+Maximal length of chains: 1
+Maximal element: 7563
+0.067000
+
+func = hash_func_stable, size = 5511. В качестве хеширующей функции использовалась сумма рекомендованная стандартом в Java.
+Number of using cells: 5234
+Number of elements: 188455
+Average length of chains: 3
+Minimal length of chains: 1
+Maximal length of chains: 11
+Maximal element: 7456
+0.086000
+
+func = hash_func_stable, size = 10511. В качестве хеширующей функции использовалась сумма рекомендованная стандартом в Java.
+Number of using cells: 8356
+Number of elements: 188455
+Average length of chains: 1
+Minimal length of chains: 1
+Maximal length of chains: 8
+Maximal element: 7456
+0.083000
+
+func = hash_func_stable, size = 50511. В качестве хеширующей функции использовалась сумма рекомендованная стандартом в Java.
+Number of using cells: 14079
+Number of elements: 188455
+Average length of chains: 1
+Minimal length of chains: 1
+Maximal length of chains: 5
+Maximal element: 7456
+0.109000

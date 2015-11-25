@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 // BLOCK 1: structs and auxiliary function
 
@@ -117,8 +118,8 @@ void create(int(*func)(char*), int sz){            // create hashmap
     tbl.callback = func;
     for (i = 0; i < sz; i++){
         tbl.arr[i].v = malloc(1 * sizeof(vector));
-        tbl.arr[i].v->next = NULL;
-        tbl.arr[i].v->count = 0;
+        (tbl.arr[i].v)->next = NULL;
+        (tbl.arr[i].v)->count = 0;
     }
 
     return;
@@ -229,4 +230,30 @@ void statistic(){
     printf("Maximal element: %d\n", max_elem);
 
     return;
+}
+
+int main()
+{
+    double start = clock();
+
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+
+    const int size = 50511; // size of hashmap;
+    create(hash_func_stable, size);
+
+    char ch[100];
+    while (scanf("%s", ch) != EOF){
+        size_t len = strlen(ch) - 1;
+        while (len >= 0 && !check_symb(ch[len])){
+            ch[len] = '\0';
+            len--;
+        }
+        add(ch);
+    }
+    statistic();
+    del();
+    printf("%f", (clock() - start) / CLOCKS_PER_SEC);
+
+    return 0;
 }
