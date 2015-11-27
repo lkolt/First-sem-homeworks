@@ -15,6 +15,10 @@ void init(){
 
     tree *head;
     head = (tree*)malloc(sizeof(tree));
+    if (head == NULL){
+        printf("Nothing memory\n");
+        return;
+    }
     head->l = head->r = NULL;
     head->x = 0;
     T.head = head;
@@ -25,6 +29,10 @@ void init(){
 tree *new_point(int x){
 
     tree *tmp = (tree*)malloc(sizeof(tree));
+    if (tmp == NULL){
+        printf("Nothing memory\n");
+        return;
+    }
     tmp->x = x;
     tmp->l = tmp->r = NULL;
 
