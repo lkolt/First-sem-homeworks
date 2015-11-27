@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 // BLOCK 1: structs and auxiliary function
 
@@ -28,7 +29,7 @@ int hash_func_const(char *ch){               // constant hash function
 int hash_func_count(char *ch){               // sum alphabet hash function
 
     int sum = 0;
-    while (*ch){
+    while (*ch != '\0'){
         sum += *ch;
         ch++;
     }
@@ -101,7 +102,7 @@ int max(int a, int b){  // max(a, b);
 
 int check_symb(char c){
 
-    if (((c >= 'a') && (c <= 'z')) || ((c >= '0') && (c <= '9')) || ((c >= 'A') && (c <= 'A'))){
+    if (isalpha(c) || isalnum(c)){
         return 1;
     }
     return 0;
@@ -114,9 +115,17 @@ void create(int(*func)(char*), int sz){            // create hashmap
     int i;
     tbl.size = sz;
     tbl.arr = (array*)malloc(sz * sizeof(array));
+    if (tbl.arr == NULL){
+        printf("Haven't memory for hashmap\n");
+        return;
+    }
     tbl.callback = func;
     for (i = 0; i < sz; i++){
         tbl.arr[i].v = malloc(1 * sizeof(vector));
+        if (tbl.arr[i].v == NULL){
+            printf("Haven't memory for hashmap\n");
+            return;
+        }
         tbl.arr[i].v->next = NULL;
         tbl.arr[i].v->count = 0;
     }
@@ -141,6 +150,10 @@ void add(char *ch){                                      //add a string in hashm
     vector *cur = find(ch);
     if (cur->next == NULL){ // new elem
         vector *nw = (vector*)malloc(sizeof(vector));
+        if (nw == NULL){
+            printf("Haven't memory for hashmap\n");
+            return;
+        }
         cur->next = nw;
         nw->next = NULL;
         nw->count = 1;
