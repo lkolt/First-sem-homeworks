@@ -163,7 +163,7 @@ void add(char *ch, int x){                                      //add a string i
         nw->hash = call_hash_func(tbl.callback, ch);;
     } else {
         cur = cur->next;
-        cur->count += x;
+        cur->count = x;
     }
 
     return;
@@ -210,7 +210,7 @@ void TASK5(){
         if (count(s) == 0){
             top = add_vec(top, s);
         }
-        add(s, 1);
+        add(s, count(s) + 1);
     }
     print(head->next);
     quit(head);
@@ -220,9 +220,3 @@ void TASK5(){
 }
 
 // END OF TASK 5
-
-int main(){
-
-    TASK5();
-    return 0;
-}
