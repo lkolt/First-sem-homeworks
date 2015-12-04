@@ -145,7 +145,7 @@ void del(){                                           // free hashmap
     return;
 }
 
-void add(char *ch){                                      //add a string in hashmap
+void set(char *ch, int x){                                      //add a string in hashmap
 
     vector *cur = find(ch);
     if (cur->next == NULL){ // new elem
@@ -156,11 +156,11 @@ void add(char *ch){                                      //add a string in hashm
         }
         cur->next = nw;
         nw->next = NULL;
-        nw->count = 1;
+        nw->count = x;
         nw->hash = call_hash_func(tbl.callback, ch);;
     } else {
         cur = cur->next;
-        cur->count++;
+        cur->count = x;
     }
 
     return;
@@ -172,12 +172,9 @@ void erase(char *ch){  // delete one string ch out of hashmap
     if (cur->next == NULL){
         printf("Ooops, no found this string =(\n");
     } else {
-        cur = cur->next;
-        if (cur->count == 0){
-            printf("We cant remove this, because we haven't it =(\n");
-        } else {
-            cur->count--;
-        }
+        vector *tmp = cur->next;
+        cur->next = tmp->next;
+        free(tmp);
     }
 
     return;
@@ -186,9 +183,9 @@ void erase(char *ch){  // delete one string ch out of hashmap
 void count(char *ch){
 
     vector *cur = find(ch);
-    printf("The number of occurrences: ");
+    printf("Value: ");
     if (cur->next == NULL){
-        printf("0\n");
+        printf("not exists\n");
     } else {
         cur = cur->next;
         printf("%d\n", cur->count);
