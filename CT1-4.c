@@ -24,7 +24,13 @@ int my_strcmp(char *s1, char *s2){
         s2++;
     }
     if (dif == 0){
-        return my_strlen(s1) - my_strlen(s2);
+        if (*s1 == '\0' && *s2 != '\0'){
+            return -1;
+        } else if (*s1 != '\0' && *s2 == '\0'){
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     return dif;

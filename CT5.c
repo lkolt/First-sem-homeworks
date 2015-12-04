@@ -152,18 +152,18 @@ void del(){                                           // free hashmap
     return;
 }
 
-void add(char *ch){                                      //add a string in hashmap
+void add(char *ch, int x){                                      //add a string in hashmap
 
     vector *cur = find(ch);
     if (cur->next == NULL){ // new elem
         vector *nw = (vector*)malloc(sizeof(vector));
         cur->next = nw;
         nw->next = NULL;
-        nw->count = 1;
+        nw->count = x;
         nw->hash = call_hash_func(tbl.callback, ch);;
     } else {
         cur = cur->next;
-        cur->count++;
+        cur->count += x;
     }
 
     return;
@@ -210,7 +210,7 @@ void TASK5(){
         if (count(s) == 0){
             top = add_vec(top, s);
         }
-        add(s);
+        add(s, 1);
     }
     print(head->next);
     quit(head);
@@ -220,3 +220,9 @@ void TASK5(){
 }
 
 // END OF TASK 5
+
+int main(){
+
+    TASK5();
+    return 0;
+}
