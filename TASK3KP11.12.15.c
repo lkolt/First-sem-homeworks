@@ -8,6 +8,7 @@ void TASK3(){
 
     char ch = fgetc(fi);
     if (ch == EOF){
+        fclose(fi);
         return;
     }
     char last = ch;
@@ -15,6 +16,7 @@ void TASK3(){
     while (ch = fgetc(fi)){
 
         if (ch == EOF){
+            fclose(fi);
             return;
         }
         if (f != 0){
@@ -32,4 +34,6 @@ void TASK3(){
         last = ch;
     }
 
+    fclose(fi);
+    return;
 }
