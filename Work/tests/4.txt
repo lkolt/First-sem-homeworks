@@ -1,0 +1,10 @@
+ldc 10
+st 0
+l: ld 0
+ldc 1
+ld 0
+sub
+st 0
+ld 0
+br l
+ret
