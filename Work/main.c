@@ -5,6 +5,19 @@
 #include <string.h>
 #include <ctype.h>
 
+#define UNKNOWN -1
+#define ld 0
+#define st 1
+#define ldc 2
+#define add 3
+#define sub 4
+#define cmp 5
+#define jump 6
+#define br 7
+#define hlt 8
+#define size_m 262144
+#define maxn_s 255
+
 struct instruction{
     int type;
     int jmp;
@@ -12,17 +25,19 @@ struct instruction{
 };
 
 struct search{
-    char *st;
+    char *str;
     int id;
 };
 
-int stack[262144];
+// size_m = 262144 = 2^18 - size of memory & stack
+// maxn_s = 255 - max size of string
+int stack[size_m];
 int top = 0;
-int memory[262144];
-struct instruction arr[262144];
+int memory[size_m];
+struct instruction arr[size_m];
 int id = 0;
-char *mark_arr[262144];
-struct search jmp_arr[262144];
+char *mark_arr[size_m];
+struct search jmp_arr[size_m];
 int cnt_jmp = 0;
 char *com_string[9] = {"ld", "st", "ldc", "add", "sub", "cmp", "jmp", "br", "hlt"};
 
@@ -34,7 +49,7 @@ inline int pop(){       // pop out of stack
     return stack[top];
 }
 
-inline void add(int val){ // add into stack
+inline void push(int val){ // add into stack
     stack[top] = val;
     top++;
 
@@ -47,13 +62,13 @@ void free_mark(){         // free memory
         free(mark_arr[i]);
     }
     for (i = 0; i < cnt_jmp; i++){
-        free(jmp_arr[i].st);
+        free(jmp_arr[i].str);
     }
 
     return;
 }
 
-int delete_spaces(int j, char str[255], int size){ // move to first non-space symbol
+int delete_spaces(int j, char str[maxn_s], int size){ // move to first non-space symbol
     while (str[j] == ' ' && j < size){
         j++;
     }
@@ -95,13 +110,13 @@ void print(){
 int add_instruct(char *mark, int tp, int value, char *find_mark){
     mark_arr[id] = mark;
 
-    if (tp < 2 && value < 0){  // address < 0
+    if ((tp == ld || tp == st) && value < 0){  // address < 0
         return 1;
     }
 
     add_to_arr(tp, value);     // add new instruction
-    if (tp == 6 || tp == 7){   // add find mark
-        jmp_arr[cnt_jmp].st = find_mark;
+    if (tp == jump || tp == br){   // add find mark
+        jmp_arr[cnt_jmp].str = find_mark;
         jmp_arr[cnt_jmp].id = id - 1;
         cnt_jmp++;
     }
@@ -111,7 +126,7 @@ int add_instruct(char *mark, int tp, int value, char *find_mark){
 
 int read(){
     while (1){
-        char *str = (char*)malloc(sizeof(char) * 255);
+        char *str = (char*)malloc(sizeof(char) * maxn_s);
         if (str == NULL){
             return 1;
         }
@@ -131,17 +146,17 @@ int read(){
         }
 
         int i = 0;
-        char *mark = (char*)malloc(sizeof(char) * 255);
+        char *mark = (char*)malloc(sizeof(char) * maxn_s);
         if (mark == NULL){ // out of memory
             free(str);
             return 1;
         }
-        char *find_mark = (char*)malloc(sizeof(char) * 255);
+        char *find_mark = (char*)malloc(sizeof(char) * maxn_s);
         if (find_mark == NULL){
             free(str); free(mark);
             return 1;
         }
-        char *command = (char*)malloc(sizeof(char) * 255);
+        char *command = (char*)malloc(sizeof(char) * maxn_s);
         if (command == NULL){
             free(str); free(mark); free(find_mark);
             return 1;
@@ -175,12 +190,12 @@ int read(){
         }
 
         int tp = define_type(command);
-        if (tp == -1){                      // if cant understand instruction
+        if (tp == UNKNOWN){                      // if cant understand instruction
             free(str); free(mark); free(find_mark); free(command);
             return 1;
         }
 
-        if (tp == 6 || tp == 7){  // catch mark for find
+        if (tp == jump || tp == br){  // catch mark for find
             j = delete_spaces(j, str, size);
             i = 0;
             while (j < size && isalpha(str[j])){
@@ -192,7 +207,7 @@ int read(){
                 free(str); free(mark); free(find_mark); free(command);
                 return 1;
             }
-        } else if (tp < 3){    // catch number
+        } else if (tp == ld || tp == st || tp == ldc){    // catch number
             j = delete_spaces(j, str, size);
             int is_negative = 0;
             if (str[j] == '-'){
@@ -229,7 +244,7 @@ int jmp(){                   // try to jmp -> id
     for (i = 0; i < cnt_jmp; i++){
         int k = 0;
         for (j = 0; j < id; j++){
-            if (strcmp(jmp_arr[i].st, mark_arr[j]) == 0){
+            if (strcmp(jmp_arr[i].str, mark_arr[j]) == 0){
                 arr[jmp_arr[i].id].jmp = j;
                 k = 1;
                 break;
@@ -249,60 +264,60 @@ int solve(){
         int tp = arr[PI].type;
         int val = arr[PI].val;
 
-        if (tp == 0){          // ld
-            add(memory[val]);
+        if (tp == ld){          // ld
+            push(memory[val]);
         }
 
-        if (tp == 1){          // st
+        if (tp == st){          // st
             if (top == 0){
                 return 1;
             }
             memory[val] = pop();
         }
 
-        if (tp == 2){          // ldc
-            add(val);
+        if (tp == ldc){          // ldc
+            push(val);
         }
 
-        if (tp == 3){          // add
+        if (tp == add){          // add
             if (top < 1){
                 return 1;
             }
             int a = pop();
             int b = pop();
-            add(a + b);
+            push(a + b);
         }
 
-        if (tp == 4){          // sub
+        if (tp == sub){          // sub
             if (top < 1){
                 return 1;
             }
             int a = pop();
             int b = pop();
-            add(a - b);
+            push(a - b);
         }
 
-        if (tp == 5){          // cmp
+        if (tp == cmp){          // cmp
             if (top < 1){
                 return 1;
             }
             int a = pop();
             int b = pop();
             if (a == b){
-                add(0);
+                push(0);
             } else if (a < b){
-                add(-1);
+                push(-1);
             } else {
-                add(1);
+                push(1);
             }
         }
 
-        if (tp == 6){        // jmp
+        if (tp == jmp){        // jmp
             PI = arr[PI].jmp;
             continue;
         }
 
-        if (tp == 7){        // br
+        if (tp == br){        // br
             if (top == 0){
                 return 1;
             }
@@ -312,7 +327,7 @@ int solve(){
             }
         }
 
-        if (tp == 8){        // hlt
+        if (tp == hlt){        // hlt
             return 0;
         }
 
