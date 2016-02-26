@@ -1,0 +1,4 @@
+ldc 15
+ldc 20
+add
+ret
